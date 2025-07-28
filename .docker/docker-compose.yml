@@ -1,0 +1,8 @@
+services:
+  web:
+    # build: . 
+    image: ghcr.io/akatgelar/akatgelar-landingpage:latest
+    container_name: "akatgelar-landingpage" 
+    ports:
+      - "2010:80"
+    restart: always
