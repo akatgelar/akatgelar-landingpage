@@ -43,7 +43,8 @@ jobs:
           script: | 
             cd /home/app/akatgelar-landingpage/
             echo "${{ secrets.PACKAGE_TOKEN }}" | docker login ghcr.io -username ${{ secrets.PACKAGE_USERNAME }} --password-stdin
-            sudo docker compose stop
-            sudo docker compose rm -f
-            sudo docker compose pull 
-            sudo docker compose up -d
+            # sudo docker compose stop
+            # sudo docker compose rm -f
+            # sudo docker compose pull 
+            # sudo docker compose up -d
+            docker rollout -f docker-compose.yml akatgelar-landingpage

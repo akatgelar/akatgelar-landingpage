@@ -1,5 +1,5 @@
 services:
-  web:
+  akatgelar-landingpage:
     # build: . 
     image: ghcr.io/akatgelar/akatgelar-landingpage:latest
     container_name: "akatgelar-landingpage" 
