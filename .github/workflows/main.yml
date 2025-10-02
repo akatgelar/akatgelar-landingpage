@@ -18,8 +18,15 @@ jobs:
           registry: https://ghcr.io
           username: ${{ secrets.PACKAGE_USERNAME }}
           password: ${{ secrets.PACKAGE_TOKEN }}
+
+      - name: Set timezone to Asia/Jakarta
+        uses: szenius/set-timezone@v2.0
+        with:
+          timezoneLinux: "Asia/Jakarta"
+
       - name: Set Docker image version
         run: echo "DOCKER_IMAGE_VERSION=$(date +'%Y%m%d.%H%M%S')" >> $GITHUB_ENV
+
       - name: Build and push Docker image
         run: |
           docker build -t ghcr.io/akatgelar/akatgelar-landingpage:${DOCKER_IMAGE_VERSION} -f .docker/Dockerfile .
@@ -44,7 +51,7 @@ jobs:
           script: | 
             cd /home/app/akatgelar-landingpage/
             echo "${{ secrets.PACKAGE_TOKEN }}" | docker login ghcr.io -username ${{ secrets.PACKAGE_USERNAME }} --password-stdin
-            printf "$GITHUB_ENV" >> .env
+            printf "DOCKER_IMAGE_VERSION=${DOCKER_IMAGE_VERSION}" >> .env
             sudo docker compose stop
             sudo docker compose rm -f
             sudo docker compose pull 
