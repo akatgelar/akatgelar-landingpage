@@ -18,10 +18,10 @@ jobs:
           registry: https://ghcr.io
           username: ${{ secrets.PACKAGE_USERNAME }}
           password: ${{ secrets.PACKAGE_TOKEN }}
-      
+      - name: Set Docker image version
+        run: echo "DOCKER_IMAGE_VERSION=$(date +'%Y%m%d.%H%M%S')" >> $GITHUB_ENV
       - name: Build and push Docker image
         run: |
-          echo "DOCKER_IMAGE_VERSION=$(date +'%Y%m%d.%H%M%S')" >> $GITHUB_ENV
           docker build -t ghcr.io/akatgelar/akatgelar-landingpage:${DOCKER_IMAGE_VERSION} -f .docker/Dockerfile .
           docker push ghcr.io/akatgelar/akatgelar-landingpage:${DOCKER_IMAGE_VERSION}
       
