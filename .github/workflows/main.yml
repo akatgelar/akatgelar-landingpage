@@ -22,8 +22,8 @@ jobs:
       - name: Build and push Docker image
         run: |
           echo "DOCKER_IMAGE_VERSION=$(date +'%Y%m%d.%H%M%S')" >> $GITHUB_ENV
-          docker build -t ghcr.io/akatgelar/akatgelar-landingpage:$DOCKER_IMAGE_VERSION -f .docker/Dockerfile .
-          docker push ghcr.io/akatgelar/akatgelar-landingpage:$DOCKER_IMAGE_VERSION
+          docker build -t ghcr.io/akatgelar/akatgelar-landingpage:${DOCKER_IMAGE_VERSION} -f .docker/Dockerfile .
+          docker push ghcr.io/akatgelar/akatgelar-landingpage:${DOCKER_IMAGE_VERSION}
       
       - name: Copy docker-compose file to VPS
         uses: appleboy/scp-action@v0.1.7
