@@ -51,7 +51,7 @@ jobs:
           script: | 
             cd /home/app/akatgelar-landingpage/
             echo "${{ secrets.PACKAGE_TOKEN }}" | docker login ghcr.io -username ${{ secrets.PACKAGE_USERNAME }} --password-stdin
-            printf "DOCKER_IMAGE_VERSION=${DOCKER_IMAGE_VERSION}" >> .env
+            printf "DOCKER_IMAGE_VERSION=${{ env.DOCKER_IMAGE_VERSION }}" >> .env
             sudo docker compose stop
             sudo docker compose rm -f
             sudo docker compose pull 
