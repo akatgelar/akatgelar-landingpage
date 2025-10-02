@@ -21,8 +21,9 @@ jobs:
       
       - name: Build and push Docker image
         run: |
-          docker build -t ghcr.io/akatgelar/akatgelar-landingpage:latest -f .docker/Dockerfile .
-          docker push ghcr.io/akatgelar/akatgelar-landingpage:latest
+          echo "DOCKER_IMAGE_VERSION=$(date +'%Y%m%d.%H%M%S')" >> $GITHUB_ENV
+          docker build -t ghcr.io/akatgelar/akatgelar-landingpage:$DOCKER_IMAGE_VERSION -f .docker/Dockerfile .
+          docker push ghcr.io/akatgelar/akatgelar-landingpage:$DOCKER_IMAGE_VERSION
       
       - name: Copy docker-compose file to VPS
         uses: appleboy/scp-action@v0.1.7
@@ -43,8 +44,8 @@ jobs:
           script: | 
             cd /home/app/akatgelar-landingpage/
             echo "${{ secrets.PACKAGE_TOKEN }}" | docker login ghcr.io -username ${{ secrets.PACKAGE_USERNAME }} --password-stdin
+            printf "$GITHUB_ENV" >> .env
             sudo docker compose stop
             sudo docker compose rm -f
             sudo docker compose pull 
-            sudo docker compose up -d
-            # docker rollout -f docker-compose.yml akatgelar-landingpage
+            sudo docker compose up -d 

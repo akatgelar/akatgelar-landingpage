@@ -1,7 +1,7 @@
 services:
   akatgelar-landingpage:
     # build: . 
-    image: ghcr.io/akatgelar/akatgelar-landingpage:latest
+    image: "ghcr.io/akatgelar/akatgelar-landingpage:${DOCKER_IMAGE_VERSION}"
     container_name: "akatgelar-landingpage" 
     ports:
       - "2010:80"
