@@ -6,7 +6,8 @@ on:
       - main
 
 jobs:
-  build_and_deploy:
+  build:
+    name: Build docker image
     runs-on: ubuntu-latest
     steps:
       - name: Checkout the repo
@@ -32,6 +33,10 @@ jobs:
           docker build -t ghcr.io/akatgelar/akatgelar-landingpage:${DOCKER_IMAGE_VERSION} -f .docker/Dockerfile .
           docker push ghcr.io/akatgelar/akatgelar-landingpage:${DOCKER_IMAGE_VERSION}
       
+  deploy:
+    name: Deploy to server
+    runs-on: ubuntu-latest
+    steps:
       - name: Copy docker-compose file to VPS
         uses: appleboy/scp-action@v0.1.7
         with:
@@ -42,7 +47,7 @@ jobs:
           target: /home/app/akatgelar-landingpage/
           strip_components: 1
         
-      - name: Deploy docker-compose on VPS
+      - name: Running docker-compose script
         uses: appleboy/ssh-action@master
         with:
           host: ${{ secrets.VPS_IP }}
