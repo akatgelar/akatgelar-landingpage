@@ -9,6 +9,8 @@ jobs:
   build:
     name: Build docker image
     runs-on: ubuntu-latest
+    outputs:
+      image_version: ${{ steps.set_version.outputs.image_version }}
     steps:
       - name: Checkout the repo
         uses: actions/checkout@v4
@@ -26,16 +28,17 @@ jobs:
           timezoneLinux: "Asia/Jakarta"
 
       - name: Set Docker image version
-        run: echo "DOCKER_IMAGE_VERSION=$(date +'%Y%m%d.%H%M%S')" >> $GITHUB_ENV
+        run: echo "DOCKER_IMAGE_VERSION=$(date +'%Y%m%d.%H%M%S')" >> $GITHUB_OUTPUT
 
       - name: Build and push Docker image
         run: |
-          docker build -t ghcr.io/akatgelar/akatgelar-landingpage:${DOCKER_IMAGE_VERSION} -f .docker/Dockerfile .
-          docker push ghcr.io/akatgelar/akatgelar-landingpage:${DOCKER_IMAGE_VERSION}
+          docker build -t ghcr.io/akatgelar/akatgelar-landingpage:${{ steps.set_version.outputs.image_version }} -f .docker/Dockerfile .
+          docker push ghcr.io/akatgelar/akatgelar-landingpage:${{ steps.set_version.outputs.image_version }}
       
   deploy:
     name: Deploy to server
     runs-on: ubuntu-latest
+    needs: build
     steps:
       - name: Copy docker-compose file to VPS
         uses: appleboy/scp-action@v0.1.7
@@ -56,8 +59,8 @@ jobs:
           script: | 
             cd /home/app/akatgelar-landingpage/
             echo "${{ secrets.PACKAGE_TOKEN }}" | docker login ghcr.io -username ${{ secrets.PACKAGE_USERNAME }} --password-stdin
-            printf "DOCKER_IMAGE_VERSION=${{ env.DOCKER_IMAGE_VERSION }}" > .env
+            printf "DOCKER_IMAGE_VERSION=${{ needs.build.outputs.image_version }}" > .env
             sudo docker compose stop
             sudo docker compose rm -f
             sudo docker compose pull 
-            sudo docker compose up -d 
+            sudo docker compose up -d
