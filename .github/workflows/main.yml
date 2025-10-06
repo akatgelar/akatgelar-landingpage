@@ -16,7 +16,7 @@ jobs:
       - name: Checkout the repo
         uses: actions/checkout@v4
 
-      - name: Login to Dockerhub
+      - name: Login to github container registry
         uses: docker/login-action@v1
         with:
           registry: https://ghcr.io
@@ -28,11 +28,11 @@ jobs:
         with:
           timezoneLinux: "Asia/Jakarta"
 
-      - name: Set Docker image version
+      - name: Set docker image version
         id: set_version
         run: echo "image_version=$(date +'%Y%m%d.%H%M%S')" >> $GITHUB_OUTPUT
 
-      - name: Build and push Docker image
+      - name: Build and push docker image
         run: |
           docker build -t ghcr.io/akatgelar/akatgelar-landingpage:${{ steps.set_version.outputs.image_version }} -f .docker/Dockerfile .
           docker push ghcr.io/akatgelar/akatgelar-landingpage:${{ steps.set_version.outputs.image_version }}
