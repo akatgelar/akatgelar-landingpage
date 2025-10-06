@@ -62,6 +62,7 @@ jobs:
           password: ${{ secrets.VPS_PASSWORD }} 
           source: ./retrieved/docker-compose.yml
           target: /home/app/akatgelar-landingpage/
+          strip_components: 1
 
       - name: Running docker-compose script
         uses: appleboy/ssh-action@master
